@@ -6,7 +6,7 @@ class DataFileNotFound(Exception):
     #wyprintuje jesli nie bedzie zadnego file
     pass
 
-class InvalisSchemaError(Exception):
+class InvalidSchemaError(Exception):
     #wyrzuc jesli csv nie ma wymaganych kolumn
     pass
 
@@ -23,12 +23,16 @@ class Loader:
         if not os.path.exists(path):
             raise DataFileNotFound(f"Expected file not fount: {path}")
         
-    # def _read.csv(self,path):
-    #     try:
-    #         df=pd.read_csv(path)
-    #         return df
-    #     except FileNotFoundError:
-    #         raise DataFileNotFound(f"File not fount: {path}")
+    def _read_csv(self,path):
+        try:
+            df=pd.read_csv(path)
+            return df
+        except FileNotFoundError:
+            raise DataFileNotFound(f"File not fount: {path}")
+        except pd.errors.EmptyDataError:
+            raise InvalidSchemaError(f"File is empty or has no rows: {path}")
+        except pd.errors.ParserError as  e:
+            raise InvalidSchemaError(f"Cv parser error in : {path} -> {e}")
         
     
     def load_products(self):

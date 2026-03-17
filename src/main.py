@@ -4,7 +4,7 @@ from analyzer import SalesAnalyzer
 import visualizer as viz
 import os
 
-
+#zaladowanie i czyszczenie
 loader= Loader(data_dir="../darta")
 print(loader,"dziala")
 
@@ -18,8 +18,8 @@ except Exception as e:
 
 cleaner=Cleaner()
 products=cleaner.clean_products(products)
-customers=cleaner.clean__products(customers)
-sales=cleaner.sales(sales)
+customers=cleaner.clean__customers(customers)
+sales=cleaner.clean_sales(sales)
 sales_enriched=cleaner.clean_sales_enriched(sales, products,customers)
 
 #analyze
