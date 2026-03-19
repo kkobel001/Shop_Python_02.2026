@@ -44,7 +44,41 @@ class SalesAnalyzer:
         return out
     
     def by_product(self):
+        """Robimy cos ala sql. grupujemy po produkt name"""
+        #as_index=false wpisuje dlatego zeby nie dopisał się kolejny indeks
         agg=(
-          self.df.groupby("product_name", as_index=False)      
+          self.df.groupby("product_name", as_index=False)     
+          .agg(units=("units","sum"), revenue=("revenue","sum"))
+          .sort_values("revenue", accending=False)
 
         )
+        return agg
+    
+    def by_category(self):
+        agg=(
+          self.df.groupby("category", as_index=False)     
+          .agg(units=("units","sum"), revenue=("revenue","sum"))
+          .sort_values("revenue", accending=False)
+
+        )
+        return agg
+    
+    def by_region(self):
+        agg=(
+          self.df.groupby("region", as_index=False)     
+          .agg(units=("units","sum"), revenue=("revenue","sum"))
+          .sort_values("revenue", accending=False)
+
+        )
+        return agg
+
+
+    def by_month(self):
+        df=self.df.copy()
+        df["year_month"]= df["date"].dt.to_period("M").astype(str)
+        agg= (
+            df.groupby("year_month", as_index=False)
+                .agg(units=("units","sum"),revenue=("revenue", "sum"))
+                .sort_values("year_month")
+        )
+        return agg
