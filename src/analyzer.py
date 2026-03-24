@@ -11,7 +11,7 @@ class SalesAnalyzer:
         required=["units","price","product_name","region", "date"] #sprawdzamy czy nie brakuje nam zadnej kolumny i piszemy wyjątek jesli jakiejs kolumny brakuje
         missing=[]
         for c in required:
-            if c in self.df.columns:
+            if c not in self.df.columns:
                 missing.append(c)
         if missing:
             raise ValueError(f"SalesAnalyzer:missing required columns: {missing}")
@@ -39,8 +39,8 @@ class SalesAnalyzer:
         out["total_units"]=int(self.df["units"].sum())
         out["total_revenue"]=float(self.df["revenue"].sum())
         out["avg_price"]=float(self.df["price"].mean())
-        out["distinct_products"]=int(self.df["products_name"].nunigue())
-        out["total_units"]=int(self.df["units"].sum()).nunigue()
+        out["distinct_products"]=int(self.df["product_name"].nunique())
+        out["distinct_customers"]=int(self.df["customer_id"].nunique())
         return out
     
     def by_product(self):
@@ -49,7 +49,7 @@ class SalesAnalyzer:
         agg=(
           self.df.groupby("product_name", as_index=False)     
           .agg(units=("units","sum"), revenue=("revenue","sum"))
-          .sort_values("revenue", accending=False)
+          .sort_values("revenue", ascending=False)
 
         )
         return agg
@@ -58,7 +58,7 @@ class SalesAnalyzer:
         agg=(
           self.df.groupby("category", as_index=False)     
           .agg(units=("units","sum"), revenue=("revenue","sum"))
-          .sort_values("revenue", accending=False)
+          .sort_values("revenue", ascending=False)
 
         )
         return agg
@@ -67,7 +67,7 @@ class SalesAnalyzer:
         agg=(
           self.df.groupby("region", as_index=False)     
           .agg(units=("units","sum"), revenue=("revenue","sum"))
-          .sort_values("revenue", accending=False)
+          .sort_values("revenue", ascending=False)
 
         )
         return agg
@@ -79,6 +79,5 @@ class SalesAnalyzer:
         agg= (
             df.groupby("year_month", as_index=False)
                 .agg(units=("units","sum"),revenue=("revenue", "sum"))
-                .sort_values("year_month")
         )
         return agg

@@ -72,31 +72,31 @@ class Cleaner:
 
         df["units"]=pd.to_numeric(df["units"],errors="coerce")
 
-        df["units"] = df["price"].fillna(0) #jesli jest 0 to tez jest to informacja i wstawiony po prostu zero
-        df = df[df["units"] >=0] 
+        df["units"] = df["units"].fillna(0)
+        df = df[df["units"] >= 0]
 
-        df = df[df["price"].notna()]     #usuwamy wszystkie reokrdy ktore nie maja daty   
-
-
-        df=self.drop_duplicates(df,subset=["sales_id"])
+        df = self.drop_duplicates(df, subset=["sale_id"])
 
         return df
-    
 
-        def clean_sales_enriched(self, df_sales,df_products,df_customers):
+    def clean_sales_enriched(self, df_sales, df_products, df_customers):
+        # merge products (on product_id) and customers (on customer_id)
+        merged = df_sales.merge(
+            df_products[["product_id", "product_name", "category", "price"]],
+            on="product_id",
+            how="left",
+        )
 
+        merged = merged.merge(
+            df_customers[["customer_id", "customer_name", "region", "age"]],
+            on="customer_id",
+            how="left",
+        )
 
+        merged = merged.dropna(subset=["product_name", "customer_name"]) 
 
-            #left-joint products
-            merged=df_sales.merge(
-                df_products[["product_id","product_name","category","price"]],
-                on="customer_id",
-                how="left"
-            )
+        return merged
 
-            matged=marged.dropna(subset=["product_name","customer_name"])
-
-            return marged
 
 
 
